@@ -8,10 +8,7 @@
   <div id="log"></div>
   <div id="token"></div>
   <script>
-            var query = window.location.search;
-            var tokens = query.split("=");
-            document.querySelector('#token').innerHTML = `EC-Token:${tokens[1]}`;
-             braintree.paypalCheckout.create({
+      braintree.paypalCheckout.create({
         authorization: 'sandbox_8hms3g5p_p55gzrgrv7dp833y'
       }).then(function (paypalCheckoutInstance) {
         return paypal.Buttons({
