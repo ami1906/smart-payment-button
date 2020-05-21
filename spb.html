@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <script src="https://js.braintreegateway.com/web/3.53.0/js/paypal-checkout.min.js"></script>
+        <script src="https://www.paypal.com/sdk/js?client-id=sb&vault=true"></script>
+    </head>
+    <body>
+  <div id="paypal-button-container"></div>
+  <div id="log"></div>
+  <div id="token"></div>
+  <script>
+            var query = window.location.search;
+            var tokens = query.split("=");
+            document.querySelector('#token').innerHTML = `EC-Token:${tokens[1]}`;
+             braintree.paypalCheckout.create({
+        authorization: 'sandbox_8hms3g5p_p55gzrgrv7dp833y'
+      }).then(function (paypalCheckoutInstance) {
+        return paypal.Buttons({
+          createBillingAgreement: function () {
+            return paypalCheckoutInstance.createPayment({
+              flow: 'vault'
+            });
+          },
+
+          onApprove: function (data, actions) {
+            return paypalCheckoutInstance.tokenizePayment(data).then(function (payload) {
+              document.querySelector('#log').innerText = JSON.stringify(payload, null, 2);
+            });
+          },
+
+          onCancel: function (err) {
+            document.querySelector('#log').innerText = 'User cancelled';
+          },
+
+          onError: function (err) {
+            document.querySelector('#log').innerText = err.message;
+          }
+        }).render('#paypal-button-container');
+      }).catch(function (err) {
+       console.error('Error!', err);
+      });
+    </script>
+</body>
+</html>
